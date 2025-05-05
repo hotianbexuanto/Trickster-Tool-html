@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图案编辑器</title>
+    <style>
+        body {
+            font-family: "SimSun", "宋体", serif;
+            background-color: #f9f7e8;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            font-weight: normal;
+            margin-bottom: 30px;
+        }
+        
+        .editor-container {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .canvas-container {
+            position: relative;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+        
+        .controls {
+            width: 200px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .control-group {
+            margin-bottom: 20px;
+        }
+        
+        .control-group h3 {
+            font-size: 16px;
+            font-weight: normal;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        
+        .control-button {
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        
+        .control-button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .active {
+            background-color: #d0d0d0;
+        }
+        
+        .preview-container {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            width: 100%;
+            background-color: #fff;
+        }
+        
+        .preview-title {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .preview-code {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .save-button, .load-button {
+            padding: 8px 15px;
+            margin-top: 15px;
+            margin-right: 10px;
+            background-color: #4a6;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .save-button:hover, .load-button:hover {
+            background-color: #3a5;
+        }
+        
+        .back-button {
+            display: block;
+            text-align: center;
+            margin: 20px auto;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 8px 15px;
+            text-decoration: none;
+            color: #333;
+            width: 100px;
+        }
+        
+        .back-button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .document-select {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 5px;
+        }
+        
+        .status-message {
+            margin-top: 10px;
+            color: #555;
+            font-size: 14px;
+            font-style: italic;
+        }
+        
+        .point-info {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .save-controls {
+            margin-top: 15px;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        .server-status {
+            margin-left: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .server-status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+            background-color: #ccc;
+        }
+        
+        .server-status-indicator.online {
+            background-color: #2ecc71;
+        }
+        
+        .save-document-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .save-document-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .save-document-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .save-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .save-dialog-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80%;
+            overflow: auto;
+        }
+        
+        .save-dialog h3 {
+            margin-top: 0;
+        }
+        
+        .save-dialog textarea {
+            width: 100%;
+            height: 300px;
+            margin: 10px 0;
+            font-family: monospace;
+            padding: 10px;
+            border: 1px solid #ddd;
+            white-space: pre;
+            overflow: auto;
+        }
+        
+        .save-dialog-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .save-dialog button {
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>图案编辑器</h1>
+        
+        <div class="editor-container">
+            <div class="canvas-container">
+                <canvas id="editorCanvas" width="400" height="400"></canvas>
+                <div class="point-info" id="pointInfo">
+                    点索引指南: 0-顶部, 1-右上, 2-右侧, 3-右下, 4-底部, 5-左下, 6-左侧, 7-左上, 8-中心
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <h3>加载文档</h3>
+                    <select id="documentSelect" class="document-select">
+                        <option value="">选择现有文档...</option>
+                    </select>
+                    <button id="loadDocument" class="control-button">加载选中文档</button>
+                </div>
+                
+                <div class="control-group">
+                    <h3>编辑模式</h3>
+                    <button id="modeSelect" class="control-button active">选择</button>
+                    <button id="modeActivate" class="control-button">激活/取消点</button>
+                    <button id="modeDrag" class="control-button">拖动连线</button>
+                    <button id="modeDisconnect" class="control-button">删除连接</button>
+                </div>
+                
+                <div class="control-group">
+                    <h3>操作</h3>
+                    <button id="clearAll" class="control-button">清除所有</button>
+                    <button id="resetPattern" class="control-button">重置图案</button>
+                </div>
+                
+                <div class="control-group">
+                    <h3>预设图案</h3>
+                    <button id="presetCross" class="control-button">十字形</button>
+                    <button id="presetT" class="control-button">T形</button>
+                    <button id="presetY" class="control-button">Y形</button>
+                    <button id="presetStar" class="control-button">星形</button>
+                    <button id="presetHexagon" class="control-button">六边形</button>
+                </div>
+                
+                <div class="status-message" id="statusMessage"></div>
+            </div>
+        </div>
+        
+        <div class="preview-container">
+            <div class="preview-title">JavaScript代码预览：</div>
+            <div class="preview-code" id="jsPreview"></div>
+            <div class="button-row">
+                <button id="copyCode" class="save-button">复制代码</button>
+                <button id="exportJs" class="save-button">导出为JS文件</button>
+            </div>
+            <div class="save-controls">
+                <span>保存到文档：</span>
+                <button id="saveToDocument" class="save-document-btn" disabled>自动保存到文档</button>
+                <span class="server-status">
+                    <span id="serverStatusIndicator" class="server-status-indicator"></span>
+                    <span id="serverStatusText">检查服务器...</span>
+                </span>
+            </div>
+        </div>
+        
+        <a href="../index.html" class="back-button">返回首页</a>
+    </div>
+    
+    <!-- 保存对话框 -->
+    <div id="saveDialog" class="save-dialog">
+        <div class="save-dialog-content">
+            <h3>保存到文档</h3>
+            <p>请复制以下代码并保存到文件： <strong><span id="saveFilePath"></span></strong></p>
+            <p style="color:#666; font-size:14px;">
+                保存步骤：<br>
+                1. 点击下方"复制代码"按钮<br>
+                2. 打开对应的文件 (在项目的tricks目录下)<br>
+                3. 将原有内容全部替换为复制的代码<br>
+                4. 保存文件
+            </p>
+            <textarea id="saveContent" readonly></textarea>
+            <div class="save-dialog-buttons">
+                <button id="copyContent">复制代码</button>
+                <button id="closeDialog">关闭</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../assets/js/pattern-utils.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('editorCanvas');
+            const ctx = canvas.getContext('2d');
+            const jsPreview = document.getElementById('jsPreview');
+            const statusMessage = document.getElementById('statusMessage');
+            const saveToDocumentBtn = document.getElementById('saveToDocument');
+            
+            // 扫描文档列表
+            function scanDocuments() {
+                const documentSelect = document.getElementById('documentSelect');
+                
+                // 清空下拉菜单，保留第一个默认选项
+                while (documentSelect.options.length > 1) {
+                    documentSelect.remove(1);
+                }
+                
+                showStatus('正在扫描文档...', 0);
+                
+                // 获取tricks目录下的所有JS文件
+                fetch('/api/list-files?dir=tricks&ext=js')
+                    .then(response => {
+                        if (!response.ok) {
+                            console.error('API响应错误:', response.status);
+                            throw new Error('无法连接到服务器API');
+                        }
+                        return response.json();
+                    })
+                    .then(files => {
+                        if (Array.isArray(files) && files.length > 0) {
+                            // 添加每个文件到下拉菜单
+                            files.forEach(file => {
+                                // 从文件名提取戏法名（去除.js扩展名）
+                                const trickName = file.replace('.js', '');
+                                const option = document.createElement('option');
+                                option.value = trickName;
+                                option.textContent = trickName;
+                                documentSelect.appendChild(option);
+                            });
+                            showStatus(`已扫描到 ${files.length} 个文档`);
+                        } else {
+                            console.warn('服务器返回空文件列表');
+                            showStatus('未找到可用文档，使用备用方法');
+                            return backupScanDocuments();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('扫描文档错误:', error);
+                        showStatus('服务器扫描失败，使用备用方法');
+                        return backupScanDocuments();
+                    });
+            }
+            
+            // 备用文档扫描方法
+            function backupScanDocuments() {
+                // 如果服务器API不可用，使用手动扫描（基于已知文件）
+                const documentSelect = document.getElementById('documentSelect');
+                const knownTricks = ['read_spell', 'write_spell', 'write_closed_spell', 'clear_spell'];
+                
+                console.log('使用备用扫描方法...');
+                
+                // 添加已知的戏法到下拉菜单
+                knownTricks.forEach(trickName => {
+                    // 检查文件是否可访问
+                    fetch(`../tricks/${trickName}.js`, { method: 'HEAD' })
+                        .then(response => {
+                            if (response.ok) {
+                                const option = document.createElement('option');
+                                option.value = trickName;
+                                option.textContent = trickName;
+                                documentSelect.appendChild(option);
+                                console.log(`已添加文档: ${trickName}`);
+                            }
+                        })
+                        .catch(err => {
+                            // 忽略不可访问的文件
+                            console.warn(`无法访问文件 ${trickName}.js:`, err);
+                        });
+                });
+                
+                showStatus('使用本地扫描模式，已加载可用文档');
+                return Promise.resolve([]);
+            }
+            
+            // 页面加载时扫描文档
+            scanDocuments();
+            
+            // 设置画布背景色
+            ctx.fillStyle = '#f9f7e8';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 中心点和半径
+            const center = { x: canvas.width/2, y: canvas.height/2 };
+            const radius = 120;
+            
+            // 编辑模式
+            let currentMode = 'select';
+            
+            // 保存状态
+            let selectedPoint = null;
+            let dragStartPoint = null;
+            let isDragging = false;
+            
+            // 定义9个点的位置
+            const points = [];
+            
+            // 围绕中心的8个点 - 按照约定的顺序排列
+            for (let i = 0; i < 8; i++) {
+                const angle = (i * Math.PI / 4);
+                const x = center.x + radius * Math.sin(angle);
+                const y = center.y - radius * Math.cos(angle);
+                
+                points.push({ x, y, active: false, index: i });
+            }
+            
+            // 中心点 - 索引为8
+            points.push({ x: center.x, y: center.y, active: true, index: 8 });
+            
+            // 连接
+            let connections = [];
+            
+            // 当前加载的文档名
+            let currentDocument = null;
+            
+            // 是否有服务器支持
+            let serverSupport = false;
+            
+            // 检测服务器支持
+            function checkServerSupport() {
+                const statusIndicator = document.getElementById('serverStatusIndicator');
+                const statusText = document.getElementById('serverStatusText');
+                
+                fetch('/api/check-server', { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            serverSupport = true;
+                            const saveToDocumentBtn = document.getElementById('saveToDocument');
+                            saveToDocumentBtn.textContent = '自动保存到文档';
+                            
+                            // 更新服务器状态指示器
+                            statusIndicator.classList.add('online');
+                            statusText.textContent = '服务器在线';
+                            
+                            showStatus('检测到服务器支持，将启用自动保存功能', 3000);
+                        } else {
+                            throw new Error('服务器响应异常');
+                        }
+                    })
+                    .catch(() => {
+                        serverSupport = false;
+                        
+                        // 更新服务器状态指示器
+                        statusIndicator.classList.remove('online');
+                        statusText.textContent = '本地模式';
+                        
+                        console.log('未检测到服务器支持，将使用手动保存模式');
+                    });
+            }
+            
+            // 页面加载时检查服务器支持
+            checkServerSupport();
+            
+            // 显示状态消息
+            function showStatus(message, duration = 3000) {
+                statusMessage.textContent = message;
+                if (duration > 0) {
+                    setTimeout(() => {
+                        statusMessage.textContent = '';
+                    }, duration);
+                }
+            }
+            
+            // 加载文档
+            function loadDocument(docName) {
+                showStatus(`正在加载 ${docName} 文档...`, 0);
+                
+                // 禁用保存按钮，直到加载完成
+                const saveToDocumentBtn = document.getElementById('saveToDocument');
+                saveToDocumentBtn.disabled = true;
+                
+                fetch(`../tricks/${docName}.js`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('文件加载失败');
+                        }
+                        return response.text();
+                    })
+                    .then(text => {
+                        try {
+                            // 提取整个patternConfig对象
+                            const configMatch = text.match(/patternConfig\s*=\s*\{[\s\S]*?\};/);
+                            if (configMatch) {
+                                // 从脚本中提取配置对象
+                                const configScript = configMatch[0];
+                                
+                                // 创建一个临时函数来安全地求值配置对象
+                                const getConfig = new Function('', `
+                                    let patternConfig;
+                                    ${configScript}
+                                    return patternConfig;
+                                `);
+                                
+                                // 安全地获取配置对象
+                                const config = getConfig();
+                                
+                                // 应用配置
+                                clearAllConnections();
+                                resetAllPoints();
+                                
+                                // 设置激活点
+                                if (config.activePoints) {
+                                    config.activePoints.forEach(pointIndex => {
+                                        // 在points数组中查找对应索引的点
+                                        const point = points.find(p => p.index === pointIndex);
+                                        if (point) {
+                                            point.active = true;
+                                        }
+                                    });
+                                }
+                                
+                                // 设置连接
+                                if (config.connections) {
+                                    connections = [...config.connections];
+                                }
+                                
+                                // 更新当前文档名
+                                currentDocument = docName;
+                                // 启用保存按钮
+                                saveToDocumentBtn.disabled = false;
+                                
+                                // 更新按钮文字
+                                if (serverSupport) {
+                                    saveToDocumentBtn.textContent = '自动保存到文档';
+                                } else {
+                                    saveToDocumentBtn.textContent = '保存到当前文档';
+                                }
+                                
+                                updateCanvas();
+                                updateCodePreview();
+                                showStatus(`成功加载文档: ${docName}`);
+                            } else {
+                                showStatus('未找到有效的图案配置');
+                            }
+                        } catch (e) {
+                            console.error('解析配置失败:', e);
+                            showStatus('解析文档失败: ' + e.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('加载文档失败:', error);
+                        showStatus('加载文档失败: ' + error.message);
+                    });
+            }
+            
+            // 初始T形状图案
+            function initTPattern() {
+                clearAllConnections();
+                resetAllPoints();
+                
+                // 根据图片设置激活点（T形）
+                const centerIdx = 8; // 中心点
+                const topIdx = 0;    // 顶部点
+                const leftIdx = 6;   // 左侧点
+                const rightIdx = 2;  // 右侧点
+                
+                points.find(p => p.index === centerIdx).active = true;
+                points.find(p => p.index === topIdx).active = true;
+                points.find(p => p.index === leftIdx).active = true;
+                points.find(p => p.index === rightIdx).active = true;
+                
+                // 连接
+                connections = [
+                    [centerIdx, topIdx],   // 中心到顶部
+                    [centerIdx, leftIdx],  // 中心到左侧
+                    [centerIdx, rightIdx]  // 中心到右侧
+                ];
+                
+                updateCanvas();
+                updateCodePreview();
+                showStatus('已加载T形模板');
+            }
+            
+            // 预设十字形图案
+            function initCrossPattern() {
+                clearAllConnections();
+                resetAllPoints();
+                
+                // 设置激活点（十字形）
+                const centerIdx = 8; // 中心点
+                const topIdx = 0;    // 顶部点
+                const rightIdx = 2;  // 右侧点
+                const bottomIdx = 4; // 底部点
+                const leftIdx = 6;   // 左侧点
+                
+                points.find(p => p.index === centerIdx).active = true;
+                points.find(p => p.index === topIdx).active = true;
+                points.find(p => p.index === rightIdx).active = true;
+                points.find(p => p.index === bottomIdx).active = true;
+                points.find(p => p.index === leftIdx).active = true;
+                
+                // 连接
+                connections = [
+                    [centerIdx, topIdx],    // 中心到顶部
+                    [centerIdx, rightIdx],  // 中心到右侧
+                    [centerIdx, bottomIdx], // 中心到底部
+                    [centerIdx, leftIdx]    // 中心到左侧
+                ];
+                
+                updateCanvas();
+                updateCodePreview();
+                showStatus('已加载十字形模板');
+            }
+            
+            // 预设Y形图案
+            function initYPattern() {
+                clearAllConnections();
+                resetAllPoints();
+                
+                // 设置激活点（Y形）
+                const centerIdx = 8;  // 中心点
+                const topIdx = 0;     // 顶部点
+                const rightTopIdx = 1; // 右上点
+                const leftBottomIdx = 5; // 左下点
+                
+                points.find(p => p.index === centerIdx).active = true;
+                points.find(p => p.index === topIdx).active = true;
+                points.find(p => p.index === rightTopIdx).active = true;
+                points.find(p => p.index === leftBottomIdx).active = true;
+                
+                // 连接
+                connections = [
+                    [centerIdx, topIdx],       // 中心到顶部
+                    [centerIdx, rightTopIdx],  // 中心到右上
+                    [centerIdx, leftBottomIdx] // 中心到左下
+                ];
+                
+                updateCanvas();
+                updateCodePreview();
+                showStatus('已加载Y形模板');
+            }
+            
+            // 预设星形图案
+            function initStarPattern() {
+                clearAllConnections();
+                resetAllPoints();
+                
+                // 中心点激活
+                const centerIdx = 8;
+                points.find(p => p.index === centerIdx).active = true;
+                
+                // 设置所有外围点激活
+                for (let i = 0; i < 8; i++) {
+                    points.find(p => p.index === i).active = true;
+                }
+                
+                // 连接中心到所有点
+                connections = [
+                    [centerIdx, 0], [centerIdx, 1], [centerIdx, 2], [centerIdx, 3], 
+                    [centerIdx, 4], [centerIdx, 5], [centerIdx, 6], [centerIdx, 7]
+                ];
+                
+                updateCanvas();
+                updateCodePreview();
+                showStatus('已加载星形模板');
+            }
+            
+            // 预设六边形图案
+            function initHexagonPattern() {
+                clearAllConnections();
+                resetAllPoints();
+                
+                // 激活六个点形成六边形
+                const topIdx = 0;      // 顶部
+                const rightTopIdx = 1;  // 右上
+                const rightBottomIdx = 3; // 右下
+                const bottomIdx = 4;    // 底部
+                const leftBottomIdx = 5; // 左下
+                const leftTopIdx = 7;   // 左上
+                
+                points.find(p => p.index === topIdx).active = true;
+                points.find(p => p.index === rightTopIdx).active = true;
+                points.find(p => p.index === rightBottomIdx).active = true;
+                points.find(p => p.index === bottomIdx).active = true;
+                points.find(p => p.index === leftBottomIdx).active = true;
+                points.find(p => p.index === leftTopIdx).active = true;
+                
+                // 连接形成六边形
+                connections = [
+                    [topIdx, rightTopIdx],       // 顶部到右上
+                    [rightTopIdx, rightBottomIdx], // 右上到右下
+                    [rightBottomIdx, bottomIdx],  // 右下到底部
+                    [bottomIdx, leftBottomIdx],   // 底部到左下
+                    [leftBottomIdx, leftTopIdx],  // 左下到左上
+                    [leftTopIdx, topIdx]          // 左上到顶部
+                ];
+                
+                updateCanvas();
+                updateCodePreview();
+                showStatus('已加载六边形模板');
+            }
+            
+            // 重置所有点
+            function resetAllPoints() {
+                points.forEach(point => {
+                    point.active = (point.index === 8); // 只有中心点保持激活
+                });
+            }
+            
+            // 清除所有连接
+            function clearAllConnections() {
+                connections = [];
+            }
+            
+            // 清除所有
+            function clearAll() {
+                clearAllConnections();
+                resetAllPoints();
+                updateCanvas();
+                updateCodePreview();
+                showStatus('已清除所有内容');
+                
+                // 清除当前文档引用
+                currentDocument = null;
+                saveToDocumentBtn.disabled = true;
+            }
+            
+            // 绘制画布
+            function updateCanvas() {
+                // 清除画布
+                ctx.fillStyle = '#f9f7e8';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // 绘制点索引（便于调试）
+                ctx.font = '10px Arial';
+                ctx.fillStyle = '#666';
+                points.forEach(point => {
+                    ctx.fillText(point.index.toString(), point.x + 15, point.y - 15);
+                });
+                
+                // 绘制连接线
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                connections.forEach(conn => {
+                    const startPoint = points.find(p => p.index === conn[0]);
+                    const endPoint = points.find(p => p.index === conn[1]);
+                    
+                    if (startPoint && endPoint) {
+                        ctx.beginPath();
+                        ctx.moveTo(startPoint.x, startPoint.y);
+                        ctx.lineTo(endPoint.x, endPoint.y);
+                        ctx.stroke();
+                    }
+                });
+                
+                // 如果正在拖拽，绘制当前拖拽线
+                if (isDragging && dragStartPoint) {
+                    ctx.setLineDash([5, 3]);
+                    ctx.beginPath();
+                    ctx.moveTo(dragStartPoint.x, dragStartPoint.y);
+                    ctx.lineTo(currentMousePos.x, currentMousePos.y);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+                
+                // 绘制所有点
+                points.forEach(point => {
+                    if (point === selectedPoint) {
+                        // 选中的点
+                        ctx.fillStyle = '#0066cc';
+                        ctx.beginPath();
+                        ctx.arc(point.x, point.y, 10, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    else if (!point.active) {
+                        // 非激活点
+                        ctx.fillStyle = '#aaa';
+                        ctx.fillRect(point.x - 4, point.y - 4, 8, 8);
+                    } 
+                    else {
+                        // 激活点
+                        ctx.fillStyle = '#000';
+                        ctx.beginPath();
+                        ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+            }
+            
+            // 更新代码预览
+            function updateCodePreview() {
+                const activePoints = points.filter(p => p.active).map(p => p.index);
+                
+                let code = `// 图案绘制代码 - 使用Pattern Utils
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('patternCanvas');
+    
+    // 定义图案配置
+    const patternConfig = {
+        center: { x: 150, y: 150 },
+        radius: 70,
+        activePoints: [${activePoints.join(', ')}],
+        connections: [
+            ${connections.map(conn => `[${conn[0]}, ${conn[1]}]`).join(',\n            ')}
+        ]
+    };
+    
+    // 使用工具函数绘制图案
+    drawPattern(canvas, patternConfig);
+});`;
+                
+                jsPreview.textContent = code;
+            }
+            
+            // 跟踪鼠标位置
+            let currentMousePos = { x: 0, y: 0 };
+            
+            canvas.addEventListener('mousemove', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                currentMousePos.x = e.clientX - rect.left;
+                currentMousePos.y = e.clientY - rect.top;
+                
+                // 查找当前鼠标下的点
+                const hoverPoint = findPoint(currentMousePos.x, currentMousePos.y);
+                const pointInfo = document.getElementById('pointInfo');
+                
+                if (hoverPoint) {
+                    // 显示点信息
+                    pointInfo.textContent = `当前选中: 点${hoverPoint.index} (${hoverPoint.active ? '已激活' : '未激活'})`;
+                    pointInfo.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+                } else {
+                    // 显示默认信息
+                    pointInfo.textContent = '点索引指南: 0-顶部, 1-右上, 2-右侧, 3-右下, 4-底部, 5-左下, 6-左侧, 7-左上, 8-中心';
+                    pointInfo.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+                }
+                
+                if (isDragging) {
+                    updateCanvas();
+                }
+            });
+            
+            // 查找点击的点
+            function findPoint(x, y) {
+                for (let i = 0; i < points.length; i++) {
+                    const point = points[i];
+                    const dx = point.x - x;
+                    const dy = point.y - y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 15) {
+                        return point;
+                    }
+                }
+                return null;
+            }
+            
+            // 查找连接
+            function findConnection(p1, p2) {
+                if (!p1 || !p2) return -1;
+                
+                return connections.findIndex(conn => 
+                    (conn[0] === p1.index && conn[1] === p2.index) || 
+                    (conn[0] === p2.index && conn[1] === p1.index)
+                );
+            }
+            
+            // 切换点的激活状态
+            function togglePointActive(point) {
+                point.active = !point.active;
+                updateCanvas();
+                updateCodePreview();
+            }
+            
+            // 添加连接
+            function addConnection(p1, p2) {
+                if (p1 && p2 && p1 !== p2) {
+                    if (findConnection(p1, p2) === -1) {
+                        connections.push([p1.index, p2.index]);
+                        updateCanvas();
+                        updateCodePreview();
+                        return true;
+                    } else {
+                        showStatus('这两个点已经连接');
+                        return false;
+                    }
+                }
+                return false;
+            }
+            
+            // 删除连接
+            function removeConnection(p1, p2) {
+                const index = findConnection(p1, p2);
+                if (index !== -1) {
+                    connections.splice(index, 1);
+                    updateCanvas();
+                    updateCodePreview();
+                    return true;
+                }
+                return false;
+            }
+            
+            // 鼠标按下事件
+            canvas.addEventListener('mousedown', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const clickedPoint = findPoint(x, y);
+                
+                if (clickedPoint) {
+                    switch (currentMode) {
+                        case 'select':
+                            selectedPoint = clickedPoint;
+                            updateCanvas();
+                            break;
+                        case 'activate':
+                            togglePointActive(clickedPoint);
+                            break;
+                        case 'drag':
+                            dragStartPoint = clickedPoint;
+                            isDragging = true;
+                            updateCanvas();
+                            break;
+                        case 'disconnect':
+                            if (selectedPoint && selectedPoint !== clickedPoint) {
+                                if (removeConnection(selectedPoint, clickedPoint)) {
+                                    showStatus('连接已删除');
+                                } else {
+                                    showStatus('未找到连接');
+                                }
+                                selectedPoint = null;
+                            } else {
+                                selectedPoint = clickedPoint;
+                                updateCanvas();
+                            }
+                            break;
+                    }
+                } else {
+                    selectedPoint = null;
+                    updateCanvas();
+                }
+            });
+            
+            // 鼠标松开事件
+            canvas.addEventListener('mouseup', function(e) {
+                if (isDragging && dragStartPoint) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const endPoint = findPoint(x, y);
+                    
+                    if (endPoint && endPoint !== dragStartPoint) {
+                        if (addConnection(dragStartPoint, endPoint)) {
+                            showStatus(`已连接点 ${dragStartPoint.index} 和点 ${endPoint.index}`);
+                        }
+                    } else if (!endPoint) {
+                        showStatus('未找到目标点，请确保拖动到一个有效的点上');
+                    }
+                }
+                
+                isDragging = false;
+                dragStartPoint = null;
+                updateCanvas();
+            });
+            
+            // 导出JS文件
+            document.getElementById('exportJs').addEventListener('click', function() {
+                const code = jsPreview.textContent;
+                const blob = new Blob([code], { type: 'text/javascript' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${document.getElementById('documentSelect').value || 'pattern'}_script.js`;
+                document.body.appendChild(a);
+                a.click();
+                
+                // 清理
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 0);
+                
+                showStatus('代码已下载为JS文件');
+            });
+            
+            // 复制代码
+            document.getElementById('copyCode').addEventListener('click', function() {
+                const codeText = jsPreview.textContent;
+                navigator.clipboard.writeText(codeText)
+                    .then(() => showStatus('代码已复制到剪贴板'))
+                    .catch(err => {
+                        console.error('复制失败：', err);
+                        showStatus('复制失败: ' + err.message);
+                    });
+            });
+            
+            // 模式按钮
+            document.getElementById('modeSelect').addEventListener('click', function() {
+                currentMode = 'select';
+                updateModeButtons();
+                showStatus('已切换到选择模式');
+            });
+            
+            document.getElementById('modeActivate').addEventListener('click', function() {
+                currentMode = 'activate';
+                updateModeButtons();
+                showStatus('已切换到激活/取消点模式');
+            });
+            
+            document.getElementById('modeDrag').addEventListener('click', function() {
+                currentMode = 'drag';
+                updateModeButtons();
+                showStatus('已切换到拖动连线模式');
+            });
+            
+            document.getElementById('modeDisconnect').addEventListener('click', function() {
+                currentMode = 'disconnect';
+                updateModeButtons();
+                showStatus('已切换到删除连接模式');
+            });
+            
+            // 加载文档
+            document.getElementById('loadDocument').addEventListener('click', function() {
+                const select = document.getElementById('documentSelect');
+                const selectedDoc = select.value;
+                
+                if (selectedDoc) {
+                    loadDocument(selectedDoc);
+                } else {
+                    showStatus('请先选择一个文档');
+                }
+            });
+            
+            // 清除和重置按钮
+            document.getElementById('clearAll').addEventListener('click', clearAll);
+            document.getElementById('resetPattern').addEventListener('click', initTPattern);
+            
+            // 预设图案按钮
+            document.getElementById('presetCross').addEventListener('click', initCrossPattern);
+            document.getElementById('presetT').addEventListener('click', initTPattern);
+            document.getElementById('presetY').addEventListener('click', initYPattern);
+            document.getElementById('presetStar').addEventListener('click', initStarPattern);
+            document.getElementById('presetHexagon').addEventListener('click', initHexagonPattern);
+            
+            // 更新模式按钮状态
+            function updateModeButtons() {
+                document.getElementById('modeSelect').classList.toggle('active', currentMode === 'select');
+                document.getElementById('modeActivate').classList.toggle('active', currentMode === 'activate');
+                document.getElementById('modeDrag').classList.toggle('active', currentMode === 'drag');
+                document.getElementById('modeDisconnect').classList.toggle('active', currentMode === 'disconnect');
+            }
+            
+            // 保存到文档
+            function saveToDocument() {
+                if (!currentDocument) {
+                    showStatus('请先选择一个文档', 5000);
+                    return;
+                }
+                
+                // 获取当前配置
+                const activePoints = points.filter(p => p.active).map(p => p.index);
+                
+                // 创建新的JavaScript代码
+                let code = `document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('patternCanvas');
+    
+    // 定义图案配置
+    const patternConfig = {
+        center: { x: 150, y: 150 },
+        radius: 70,
+        activePoints: [${activePoints.join(', ')}],
+        connections: [
+            ${connections.map(conn => `[${conn[0]}, ${conn[1]}]`).join(',\n            ')}
+        ]
+    };
+    
+    // 使用工具函数绘制图案
+    drawPattern(canvas, patternConfig);
+});`;
+                
+                // 检查是否支持服务器自动保存
+                if (serverSupport) {
+                    // 显示保存中状态
+                    showStatus('正在保存到服务器...', 0);
+                    
+                    // 使用fetch API发送POST请求保存文件
+                    fetch('/api/save-document', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ 
+                            filename: `tricks/${currentDocument}.js`,
+                            content: code 
+                        })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('服务器保存失败');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            showStatus(`已成功保存到文档: ${currentDocument}`, 5000);
+                        } else {
+                            throw new Error(data.error || '未知错误');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('保存文档失败:', error);
+                        showStatus('自动保存失败，切换到手动保存模式', 3000);
+                        
+                        // 回退到手动保存模式
+                        setTimeout(() => {
+                            showManualSaveDialog(code);
+                        }, 1000);
+                    });
+                } else {
+                    // 使用手动保存对话框
+                    showManualSaveDialog(code);
+                }
+            }
+            
+            // 显示手动保存对话框
+            function showManualSaveDialog(code) {
+                // 在静态网站环境中，我们使用对话框显示代码
+                const saveDialog = document.getElementById('saveDialog');
+                const saveContent = document.getElementById('saveContent');
+                const saveFilePath = document.getElementById('saveFilePath');
+                
+                saveFilePath.textContent = `tricks/${currentDocument}.js`;
+                saveContent.value = code;
+                saveDialog.style.display = 'flex';
+                
+                showStatus(`请按照对话框中的说明保存到 ${currentDocument}.js`, 8000);
+            }
+            
+            // 复制保存内容
+            document.getElementById('copyContent').addEventListener('click', function() {
+                const saveContent = document.getElementById('saveContent');
+                saveContent.select();
+                
+                // 尝试使用现代Clipboard API
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(saveContent.value)
+                        .then(() => {
+                            showStatus('代码已复制到剪贴板', 3000);
+                        })
+                        .catch(err => {
+                            console.error('无法复制: ', err);
+                            // 回退到传统方法
+                            document.execCommand('copy');
+                            showStatus('代码已复制到剪贴板', 3000);
+                        });
+                } else {
+                    // 回退到传统方法
+                    document.execCommand('copy');
+                    showStatus('代码已复制到剪贴板', 3000);
+                }
+            });
+            
+            // 关闭保存对话框
+            document.getElementById('closeDialog').addEventListener('click', function() {
+                document.getElementById('saveDialog').style.display = 'none';
+            });
+            
+            // 保存到文档按钮
+            saveToDocumentBtn.addEventListener('click', function() {
+                saveToDocument();
+            });
+            
+            // 初始化
+            initTPattern();
+            showStatus('编辑器已准备就绪，请选择操作模式', 5000);
+        });
+    </script>
+</body>
+</html> 
