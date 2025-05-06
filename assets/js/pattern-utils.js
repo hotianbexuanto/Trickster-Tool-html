@@ -26,13 +26,22 @@ function drawPattern(canvas, patternConfig) {
     }
     
     // 中心点（放在第9个位置）
-    points.push({ x: center.x, y: center.y, active: true, index: 8 });
+    points.push({ x: center.x, y: center.y, active: false, index: 8 });
     
     // 应用激活点配置
     if (patternConfig.activePoints) {
         patternConfig.activePoints.forEach(pointIndex => {
             if (pointIndex >= 0 && pointIndex < points.length) {
                 points[pointIndex].active = true;
+            }
+        });
+    }
+    
+    // 应用非激活点配置（优先级高于激活点）
+    if (patternConfig.inactivePoints) {
+        patternConfig.inactivePoints.forEach(pointIndex => {
+            if (pointIndex >= 0 && pointIndex < points.length) {
+                points[pointIndex].active = false;
             }
         });
     }

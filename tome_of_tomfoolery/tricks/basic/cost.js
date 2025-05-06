@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         center: { x: 150, y: 150 },
         radius: 70,
         activePoints: [0, 2, 3, 5, 6],
+        inactivePoints: [8],
         connections: [
             [5, 3],
             [3, 2],

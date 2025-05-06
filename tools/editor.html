@@ -364,8 +364,8 @@
                 
                 showStatus('正在扫描文档...', 0);
                 
-                // 获取tricks目录下的所有JS文件
-                fetch('/api/list-files?dir=tricks&ext=js')
+                // 获取tome_of_tomfoolery目录下的所有JS文件
+                fetch('/api/list-files?dir=tome_of_tomfoolery&ext=js&recursive=true')
                     .then(response => {
                         if (!response.ok) {
                             console.error('API响应错误:', response.status);
@@ -377,11 +377,17 @@
                         if (Array.isArray(files) && files.length > 0) {
                             // 添加每个文件到下拉菜单
                             files.forEach(file => {
-                                // 从文件名提取戏法名（去除.js扩展名）
-                                const trickName = file.replace('.js', '');
+                                // 从文件路径提取相对路径
                                 const option = document.createElement('option');
-                                option.value = trickName;
-                                option.textContent = trickName;
+                                option.value = file;
+                                
+                                // 显示更友好的名称
+                                let displayName = file;
+                                // 移除.js扩展名
+                                displayName = displayName.replace('.js', '');
+                                // 格式化为 "目录/文件名" 格式
+                                option.textContent = displayName;
+                                
                                 documentSelect.appendChild(option);
                             });
                             showStatus(`已扫描到 ${files.length} 个文档`);
@@ -400,29 +406,43 @@
             
             // 备用文档扫描方法
             function backupScanDocuments() {
-                // 如果服务器API不可用，使用手动扫描（基于已知文件）
+                // 如果服务器API不可用，使用手动扫描（基于已知路径）
                 const documentSelect = document.getElementById('documentSelect');
-                const knownTricks = ['read_spell', 'write_spell', 'write_closed_spell', 'clear_spell'];
+                
+                // 定义可能的文档路径
+                const knownPaths = [
+                    'tome_of_tomfoolery/tricks/basic',
+                    'tome_of_tomfoolery/delusions_ingresses/arguments'
+                ];
+                
+                // 已知的文件名
+                const knownFiles = [
+                    'read_spell', 'write_spell', 'write_closed_spell', 'clear_spell', 'reveal_spell', 'read_crow_mind', 'write_crow_mind', 'cost',
+                    'load_argument_1', 'load_argument_2', 'load_argument_3', 'load_argument_4', 'load_argument_5', 'load_argument_6', 'load_argument_7', 'load_argument_8', 'get_all_arguments'
+                ];
                 
                 console.log('使用备用扫描方法...');
                 
-                // 添加已知的戏法到下拉菜单
-                knownTricks.forEach(trickName => {
-                    // 检查文件是否可访问
-                    fetch(`../tricks/${trickName}.js`, { method: 'HEAD' })
-                        .then(response => {
-                            if (response.ok) {
-                                const option = document.createElement('option');
-                                option.value = trickName;
-                                option.textContent = trickName;
-                                documentSelect.appendChild(option);
-                                console.log(`已添加文档: ${trickName}`);
-                            }
-                        })
-                        .catch(err => {
-                            // 忽略不可访问的文件
-                            console.warn(`无法访问文件 ${trickName}.js:`, err);
-                        });
+                // 对每个可能的路径和已知文件尝试添加
+                knownPaths.forEach(path => {
+                    knownFiles.forEach(file => {
+                        const fullPath = `${path}/${file}.js`;
+                        // 检查文件是否可访问
+                        fetch(`../${fullPath}`, { method: 'HEAD' })
+                            .then(response => {
+                                if (response.ok) {
+                                    const option = document.createElement('option');
+                                    option.value = fullPath;
+                                    option.textContent = `${path}/${file}`;
+                                    documentSelect.appendChild(option);
+                                    console.log(`已添加文档: ${fullPath}`);
+                                }
+                            })
+                            .catch(err => {
+                                // 忽略不可访问的文件
+                                console.warn(`无法访问文件 ${fullPath}:`, err);
+                            });
+                    });
                 });
                 
                 showStatus('使用本地扫描模式，已加载可用文档');
@@ -518,14 +538,14 @@
             }
             
             // 加载文档
-            function loadDocument(docName) {
-                showStatus(`正在加载 ${docName} 文档...`, 0);
+            function loadDocument(docPath) {
+                showStatus(`正在加载文档: ${docPath}...`, 0);
                 
                 // 禁用保存按钮，直到加载完成
                 const saveToDocumentBtn = document.getElementById('saveToDocument');
                 saveToDocumentBtn.disabled = true;
                 
-                fetch(`../tricks/${docName}.js`)
+                fetch(`../${docPath}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('文件加载失败');
@@ -571,7 +591,7 @@
                                 }
                                 
                                 // 更新当前文档名
-                                currentDocument = docName;
+                                currentDocument = docPath;
                                 // 启用保存按钮
                                 saveToDocumentBtn.disabled = false;
                                 
@@ -584,7 +604,7 @@
                                 
                                 updateCanvas();
                                 updateCodePreview();
-                                showStatus(`成功加载文档: ${docName}`);
+                                showStatus(`成功加载文档: ${docPath}`);
                             } else {
                                 showStatus('未找到有效的图案配置');
                             }
@@ -749,8 +769,10 @@
             // 重置所有点
             function resetAllPoints() {
                 points.forEach(point => {
-                    point.active = (point.index === 8); // 只有中心点保持激活
+                    point.active = false; // 所有点初始不激活，包括中心点
                 });
+                // 只将中心点设为激活
+                points.find(p => p.index === 8).active = true;
             }
             
             // 清除所有连接
@@ -912,6 +934,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // 切换点的激活状态
             function togglePointActive(point) {
+                // 允许取消8号点（中心点）的激活状态
                 point.active = !point.active;
                 updateCanvas();
                 updateCodePreview();
@@ -1136,7 +1159,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({ 
-                            filename: `tricks/${currentDocument}.js`,
+                            filename: currentDocument,
                             content: code 
                         })
                     })
@@ -1175,11 +1198,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const saveContent = document.getElementById('saveContent');
                 const saveFilePath = document.getElementById('saveFilePath');
                 
-                saveFilePath.textContent = `tricks/${currentDocument}.js`;
+                saveFilePath.textContent = currentDocument;
                 saveContent.value = code;
                 saveDialog.style.display = 'flex';
                 
-                showStatus(`请按照对话框中的说明保存到 ${currentDocument}.js`, 8000);
+                showStatus(`请按照对话框中的说明保存到 ${currentDocument}`, 8000);
             }
             
             // 复制保存内容

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>畏真者之技巧 - 基础戏法</title>
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <title>记事员之错觉 - 基础戏法</title>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
     <style>
         .lisp-text {
             margin-top: 10px;
@@ -19,31 +19,31 @@
     <div class="container">
         <div class="header">
             <div class="category">基础戏法</div>
-            <h1 class="title">畏真者之技巧</h1>
+            <h1 class="title">记事员之错觉</h1>
         </div>
         
         <div class="pattern-container">
             <canvas id="patternCanvas" width="300" height="300"></canvas>
-            <div class="lisp-text">LISP: clear_spell</div>
+            <div class="lisp-text">LISP: read_spell</div>
         </div>
         
         <div class="description">
             <div class="trick-syntax">
-                <p class="syntax-arrow">[slot] -> </p>
+                <p class="syntax-arrow">-> any</p>
             </div>
             
             <div class="separator"></div>
             
             <div class="trick-description">
-                <p>清除所给槽位中或施法者副手中物品上的法术片段。</p>
+                <p>若施法者另一只手中物品抄有法术片段，则返回该片段；否则返回void。</p>
             </div>
         </div>
         
-        <div class="trick-id">trick-id=trickster:clear_spell</div>
+        <div class="trick-id">trick-id=trickster:read_spell</div>
         
-        <a href="../index.html" class="back-button" style="margin-top: 30px;">返回首页</a>
+        <a href="../../../index.html" class="back-button" style="margin-top: 30px;">返回首页</a>
     </div>
-    <script src="../assets/js/pattern-utils.js"></script>
-    <script src="clear_spell.js"></script>
+    <script src="../../../assets/js/pattern-utils.js"></script>
+    <script src="read_spell.js"></script>
 </body>
 </html> 

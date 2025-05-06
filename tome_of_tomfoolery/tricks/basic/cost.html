@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>展示之谋略 - 基础戏法</title>
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <title>消耗之技巧 - 基础戏法</title>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
     <style>
         .lisp-text {
             margin-top: 10px;
@@ -19,31 +19,31 @@
     <div class="container">
         <div class="header">
             <div class="category">基础戏法</div>
-            <h1 class="title">展示之谋略</h1>
+            <h1 class="title">消耗之技巧</h1>
         </div>
         
         <div class="pattern-container">
             <canvas id="patternCanvas" width="300" height="300"></canvas>
-            <div class="lisp-text">LISP: reveal</div>
+            <div class="lisp-text">LISP: cost</div>
         </div>
         
         <div class="description">
             <div class="trick-syntax">
-                <p class="syntax-arrow">any... -> any</p>
+                <p class="syntax-arrow">-></p>
             </div>
             
             <div class="separator"></div>
             
             <div class="trick-description">
-                <p>将给定的所有值作为聊天信息发送给施法者，返回第一参数。</p>
+                <p>消耗施法者物品栏中的一个紫水晶碎片。若无则产生失策。</p>
             </div>
         </div>
         
-        <div class="trick-id">trick-id=trickster:reveal</div>
+        <div class="trick-id">trick-id=trickster:cost</div>
         
-        <a href="../index.html" class="back-button" style="margin-top: 30px;">返回首页</a>
+        <a href="../../../index.html" class="back-button" style="margin-top: 30px;">返回首页</a>
     </div>
-    <script src="../assets/js/pattern-utils.js"></script>
-    <script src="reveal_spell.js"></script>
+    <script src="../../../assets/js/pattern-utils.js"></script>
+    <script src="cost.js"></script>
 </body>
 </html> 

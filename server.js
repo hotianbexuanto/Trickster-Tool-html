@@ -14,6 +14,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json()); // 用于解析JSON请求
 app.use(express.static('.')); // 将当前目录作为静态文件目录
 
+// 添加额外的静态路径映射
+app.use('/tricks', express.static('tome_of_tomfoolery/tricks'));
+app.use('/delusions_ingresses', express.static('tome_of_tomfoolery/delusions_ingresses'));
+
 // 服务器检测API
 app.head('/api/check-server', (req, res) => {
   res.status(200).end();
@@ -37,7 +41,17 @@ app.post('/api/save-document', async (req, res) => {
     
     // 验证文件名以防止目录遍历攻击
     const safePath = path.normalize(filename).replace(/^(\.\.[\/\\])+/, '');
-    const fullPath = path.join(__dirname, safePath);
+    
+    // 检查是否需要添加tome_of_tomfoolery前缀
+    let processedPath = safePath;
+    if (safePath.startsWith('delusions_ingresses/') || 
+        safePath.startsWith('delusions_ingresses\\') || 
+        safePath.startsWith('tricks/') || 
+        safePath.startsWith('tricks\\')) {
+      processedPath = `tome_of_tomfoolery/${safePath}`;
+    }
+    
+    const fullPath = path.join(__dirname, processedPath);
     
     // 确保目录存在
     const directory = path.dirname(fullPath);
@@ -46,11 +60,11 @@ app.post('/api/save-document', async (req, res) => {
     // 写入文件
     await fs.writeFile(fullPath, content, 'utf8');
     
-    console.log(`文件已保存: ${safePath}`);
+    console.log(`文件已保存: ${processedPath}`);
     
     res.json({ 
       success: true, 
-      message: `文件 ${safePath} 已成功保存` 
+      message: `文件 ${processedPath} 已成功保存` 
     });
   } catch (error) {
     console.error('保存文件时出错:', error);
@@ -65,6 +79,7 @@ app.post('/api/save-document', async (req, res) => {
 app.get('/api/list-files', async (req, res) => {
     const dir = req.query.dir;
     const ext = req.query.ext;
+    const recursive = req.query.recursive === 'true';
     
     if (!dir) {
         return res.status(400).json({ error: '必须指定目录' });
@@ -74,18 +89,38 @@ app.get('/api/list-files', async (req, res) => {
     const dirPath = path.join(__dirname, dir);
     
     try {
-        const files = await fs.readdir(dirPath);
+        // 存储所有文件路径
+        let allFiles = [];
         
-        // 如果指定了扩展名，则过滤文件
-        let filteredFiles = files;
-        if (ext) {
-            filteredFiles = files.filter(file => file.endsWith(`.${ext}`));
+        // 递归扫描目录的函数
+        async function scanDirectory(currentPath, basePath) {
+            const entries = await fs.readdir(currentPath, { withFileTypes: true });
+            
+            for (const entry of entries) {
+                const fullPath = path.join(currentPath, entry.name);
+                // 计算相对于basePath的路径
+                const relativePath = path.relative(basePath, fullPath);
+                
+                if (entry.isDirectory() && recursive) {
+                    // 递归扫描子目录
+                    await scanDirectory(fullPath, basePath);
+                } else if (entry.isFile()) {
+                    // 如果指定了扩展名，检查文件扩展名
+                    if (!ext || entry.name.endsWith(`.${ext}`)) {
+                        // 添加相对路径（使用正斜杠以统一路径格式）
+                        allFiles.push(relativePath.replace(/\\/g, '/'));
+                    }
+                }
+            }
         }
         
-        res.json(filteredFiles);
+        // 开始扫描
+        await scanDirectory(dirPath, path.join(__dirname, dir));
+        
+        res.json(allFiles);
     } catch (err) {
         console.error('读取目录失败:', err);
-        return res.status(500).json({ error: '无法读取目录' });
+        return res.status(500).json({ error: '无法读取目录', details: err.message });
     }
 });
 
