@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>怀抱之辑流 - 实体定位</title>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+    <style>
+        .lisp-text {
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #444;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="category">实体定位</div>
+            <h1 class="title">怀抱之辑流</h1>
+        </div>
+        
+        <div class="pattern-container">
+            <canvas id="patternCanvas" width="300" height="300"></canvas>
+            <div class="lisp-text">LISP: block_find_entity</div>
+        </div>
+        
+        <div class="description">
+            <div class="trick-syntax">
+                <p class="syntax-arrow">vector, [entity_type] -> entity</p>
+            </div>
+            
+            <div class="separator"></div>
+            
+            <div class="trick-description">
+                <p>查找给定位置处的实体，可传入实体类型加以限制。</p>
+            </div>
+        </div>
+        
+        <div class="trick-id">trick-id=trickster:block_find_entity</div>
+        
+        <a href="../../../index.html" class="back-button" style="margin-top: 30px;">返回首页</a>
+    </div>
+    <script src="../../../assets/js/pattern-utils.js"></script>
+    <script src="block_find_entity.js"></script>
+</body>
+</html> 

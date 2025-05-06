@@ -17,6 +17,10 @@ app.use(express.static('.')); // 将当前目录作为静态文件目录
 // 添加额外的静态路径映射
 app.use('/tricks', express.static('tome_of_tomfoolery/tricks'));
 app.use('/delusions_ingresses', express.static('tome_of_tomfoolery/delusions_ingresses'));
+app.use('/entity', express.static('tome_of_tomfoolery/delusions_ingresses/entity'));
+app.use('/entity_locating', express.static('tome_of_tomfoolery/delusions_ingresses/entity_locating'));
+app.use('/imports', express.static('tome_of_tomfoolery/delusions_ingresses/imports'));
+app.use('/arguments', express.static('tome_of_tomfoolery/delusions_ingresses/arguments'));
 
 // 服务器检测API
 app.head('/api/check-server', (req, res) => {
