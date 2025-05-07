@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>丰裕之辑流 - 物品栏信息</title>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+    <style>
+        .lisp-text {
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #444;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="category">物品栏信息</div>
+            <h1 class="title">丰裕之辑流</h1>
+        </div>
+        
+        <div class="pattern-container">
+            <canvas id="patternCanvas" width="300" height="300"></canvas>
+            <div class="lisp-text">LISP: get_count_in_slot</div>
+        </div>
+        
+        <div class="description">
+            <div class="trick-syntax">
+                <p class="syntax-arrow">slot -> number</p>
+            </div>
+            
+            <div class="separator"></div>
+            
+            <div class="trick-description">
+                <p>返回给定槽位中物品的数量。</p>
+            </div>
+        </div>
+        
+        <div class="trick-id">trick-id=trickster:get_count_in_slot</div>
+        
+        <a href="../../../index.html" class="back-button" style="margin-top: 30px;">返回首页</a>
+    </div>
+    <script src="../../../assets/js/pattern-utils.js"></script>
+    <script src="get_count_in_slot.js"></script>
+</body>
+</html> 
