@@ -415,7 +415,9 @@
                     'tome_of_tomfoolery/delusions_ingresses/arguments',
                     'tome_of_tomfoolery/delusions_ingresses/imports',
                     'tome_of_tomfoolery/delusions_ingresses/entity_locating',
-                    'tome_of_tomfoolery/delusions_ingresses/entity'
+                    'tome_of_tomfoolery/delusions_ingresses/entity',
+                    'tome_of_tomfoolery/distortions/list', // 添加曲变术的路径
+                    'tome_of_tomfoolery/distortions/vector' // 添加向量曲变术的路径
                 ];
                 
                 // 已知的文件名
@@ -426,7 +428,14 @@
                     'block_find_entity', 'range_find_entity',
                     'get_entity_type', 'get_position', 'get_eye_position', 'get_facing', 'get_velocity', 'height_reflection',
                     'sneaking_reflection', 'burning_reflection', 'sprinting_reflection', 'blocking_reflection',
-                    'get_max_health', 'get_health', 'get_armour', 'get_scale', 'get_flecks'
+                    'get_max_health', 'get_health', 'get_armour', 'get_scale', 'get_flecks',
+                    // 添加曲变术列表相关的文件
+                    'list_size', 'list_add', 'list_add_range', 'list_take_range', 'list_reverse', 
+                    'list_insert', 'list_get', 'list_index_of', 'list_remove', 'list_remove_element', 
+                    'create_number_range',
+                    // 添加向量曲变术相关的文件
+                    'extract_x', 'extract_y', 'extract_z', 'merge_vector', 'length',
+                    'dot_product', 'cross_product', 'normalize', 'align_vector'
                 ];
                 
                 console.log('使用备用扫描方法...');

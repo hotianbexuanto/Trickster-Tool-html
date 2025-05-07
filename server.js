@@ -21,6 +21,7 @@ app.use('/entity', express.static('tome_of_tomfoolery/delusions_ingresses/entity
 app.use('/entity_locating', express.static('tome_of_tomfoolery/delusions_ingresses/entity_locating'));
 app.use('/imports', express.static('tome_of_tomfoolery/delusions_ingresses/imports'));
 app.use('/arguments', express.static('tome_of_tomfoolery/delusions_ingresses/arguments'));
+app.use('/distortions', express.static('tome_of_tomfoolery/distortions')); // 添加对曲变术目录的支持
 
 // 服务器检测API
 app.head('/api/check-server', (req, res) => {
@@ -51,7 +52,9 @@ app.post('/api/save-document', async (req, res) => {
     if (safePath.startsWith('delusions_ingresses/') || 
         safePath.startsWith('delusions_ingresses\\') || 
         safePath.startsWith('tricks/') || 
-        safePath.startsWith('tricks\\')) {
+        safePath.startsWith('tricks\\') ||
+        safePath.startsWith('distortions/') ||  // 添加对曲变术路径的支持
+        safePath.startsWith('distortions\\')) {
       processedPath = `tome_of_tomfoolery/${safePath}`;
     }
     
