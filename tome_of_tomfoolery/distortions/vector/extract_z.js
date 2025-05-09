@@ -5,16 +5,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const patternConfig = {
         center: { x: 150, y: 150 },
         radius: 70,
-        activePoints: [4, 5, 6, 8],
+        activePoints: [2, 3, 7],
         connections: [
-            [4, 8],
-            [5, 8],
-            [6, 8],
-            [4, 5],
-            [5, 6]
+            [2, 3],
+            [2, 7]
         ]
     };
     
     // 使用工具函数绘制图案
     drawPattern(canvas, patternConfig);
-}); 
+});

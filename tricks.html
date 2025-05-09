@@ -59,7 +59,7 @@
         }
         
         .main-content {
-            margin-left: 250px;
+            margin-left: 290px;
             padding: 20px;
             flex: 1;
         }
@@ -77,6 +77,7 @@
         
         .category {
             margin-bottom: 30px;
+            padding-top: 10px;
         }
         
         .subcategory {
@@ -84,6 +85,7 @@
             margin-bottom: 20px;
             border-left: 2px solid #e0dccb;
             padding-left: 15px;
+            padding-top: 5px;
         }
         
         .category-title {
@@ -92,6 +94,7 @@
             border-bottom: 1px solid #999;
             padding-bottom: 10px;
             margin-bottom: 15px;
+            margin-top: 15px;
         }
         
         .subcategory-title {
@@ -100,6 +103,7 @@
             border-bottom: 1px dashed #ccc;
             padding-bottom: 8px;
             margin-bottom: 12px;
+            margin-top: 12px;
         }
         
         .tricks-list {
@@ -176,10 +180,11 @@
                     </ul>
                 </li>
                 <li>
-                    <span class="category-header">曲变术</span>
+                    <span class="category-header">曲变术与谋略术</span>
                     <ul>
                         <li><a href="#列表">列表</a></li>
                         <li><a href="#向量">向量</a></li>
+                        <li><a href="#布尔逻辑">布尔逻辑</a></li>
                     </ul>
                 </li>
             </ul>
@@ -390,13 +395,15 @@
                 </div>
             </div>
             
-            <div class="category" id="曲变术">
-                <h2 class="category-title">曲变术</h2>
+            <div class="category" id="曲变术与谋略术">
+                <h2 class="category-title">曲变术与谋略术</h2>
                 <div class="category-description">
                     <p>曲变术是仅对数据进行操作的戏法。给定相同的输入，必定得出同样的输出。</p>
+                    <p>谋略术是输入参数的数目可变的曲变术。</p>
                 </div>
                 
                 <div class="subcategory" id="列表">
+                    <h3 class="subcategory-title">列表</h3>
                     <div class="note-box">
                         <div class="note-title">笔记：列表</div>
                         <p>法术中可以创建列表。列表中能容纳任意个片段，整体又被视为单个值。</p>
@@ -419,6 +426,7 @@
                 </div>
                 
                 <div class="subcategory" id="向量">
+                    <h3 class="subcategory-title">向量</h3>
                     <div class="note-box">
                         <div class="note-title">笔记：向量</div>
                         <p>许多向量数学运算都可由基础的算术图案实现，但某些运算需要更专精的图案。</p>
@@ -437,6 +445,26 @@
                         <li><a href="tome_of_tomfoolery/distortions/vector/align_vector.html">合向归一之曲变</a></li>
                     </ul>
                 </div>
+            </div>
+            
+            <div class="subcategory" id="布尔逻辑">
+                <h3 class="subcategory-title">布尔逻辑</h3>
+                <div class="note-box">
+                    <div class="note-title">笔记：布尔逻辑</div>
+                    <p>本节的图案能够执行布尔逻辑运算。</p>
+                    <p>虽然此处会称符记要求传入布尔值，但仍应注意：如有需求，任何法术片段都会自动强制转换为布尔值。</p>
+                </div>
+                
+                <ul class="tricks-list">
+                    <li><a href="tome_of_tomfoolery/distortions/boolean/if_else.html">决策之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/boolean/equals.html">对抵之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/boolean/not_equals.html">失抵之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/boolean/all.html">无例外之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/boolean/any.html">通常态之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/boolean/none.html">缺失态之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/boolean/lesser_than.html">较小之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/boolean/greater_than.html">较大之曲变</a></li>
+                </ul>
             </div>
             
             <a href="index.html" class="back-button">返回首页</a>

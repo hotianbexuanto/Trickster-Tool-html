@@ -5,13 +5,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const patternConfig = {
         center: { x: 150, y: 150 },
         radius: 70,
-        activePoints: [1, 3, 5, 7, 8],
+        activePoints: [0, 2, 4, 6, 8],
         connections: [
-            [5, 8],
-            [8, 3],
-            [3, 5],
-            [8, 7],
-            [8, 1]
+            [0, 8],
+            [2, 8],
+            [6, 8],
+            [4, 2],
+            [8, 4],
+            [6, 0]
         ]
     };
     

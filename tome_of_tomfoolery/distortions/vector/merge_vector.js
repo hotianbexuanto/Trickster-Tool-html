@@ -8,16 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
         activePoints: [0, 2, 4, 6, 8],
         connections: [
             [0, 8],
-            [2, 8],
-            [4, 8],
             [6, 8],
             [0, 2],
-            [2, 4],
-            [4, 6],
-            [6, 0]
+            [6, 0],
+            [2, 8],
+            [8, 4]
         ]
     };
     
     // 使用工具函数绘制图案
     drawPattern(canvas, patternConfig);
-}); 
+});
