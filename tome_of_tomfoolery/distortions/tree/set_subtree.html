@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>嫁接之曲变 - 曲变术与谋略术</title>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+    <style>
+        .lisp-text {
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #444;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="category">曲变术与谋略术 > 法术</div>
+            <h1 class="title">嫁接之曲变</h1>
+        </div>
+        
+        <div class="pattern-container">
+            <canvas id="patternCanvas" width="300" height="300"></canvas>
+            <div class="lisp-text">LISP: set_subtree</div>
+        </div>
+        
+        <div class="description">
+            <div class="trick-syntax">
+                <p class="syntax-arrow">spell, number[], spell -> spell</p>
+            </div>
+            
+            <div class="separator"></div>
+            
+            <div class="trick-description">
+                <p>将后一法术嫁接到前一法术中给定地址处，替代该处的圆。</p>
+            </div>
+        </div>
+        
+        <div class="trick-id">trick-id=trickster:set_subtree</div>
+        
+        <a href="../../../tricks.html" class="back-button" style="margin-top: 30px;">返回目录</a>
+    </div>
+    <script src="../../../assets/js/pattern-utils.js"></script>
+    <script src="set_subtree.js"></script>
+</body>
+</html> 

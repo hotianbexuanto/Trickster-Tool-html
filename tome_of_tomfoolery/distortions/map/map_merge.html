@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海军将领之谋略 - 曲变术与谋略术</title>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+    <style>
+        .lisp-text {
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #444;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="category">曲变术与谋略术 > 映射</div>
+            <h1 class="title">海军将领之谋略</h1>
+        </div>
+        
+        <div class="pattern-container">
+            <canvas id="patternCanvas" width="300" height="300"></canvas>
+            <div class="lisp-text">LISP: map-merge</div>
+        </div>
+        
+        <div class="description">
+            <div class="trick-syntax">
+                <p class="syntax-arrow">{any: any}, {any: any}... -> {any: any}</p>
+            </div>
+            
+            <div class="separator"></div>
+            
+            <div class="trick-description">
+                <p>将多个映射合一。键相同的键值对取输入索引小的。</p>
+            </div>
+        </div>
+        
+        <div class="trick-id">trick-id=trickster:map_merge</div>
+        
+        <a href="../../../tricks.html" class="back-button" style="margin-top: 30px;">返回目录</a>
+    </div>
+    <script src="../../../assets/js/pattern-utils.js"></script>
+    <script src="map_merge.js"></script>
+</body>
+</html> 

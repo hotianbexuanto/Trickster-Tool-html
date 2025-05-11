@@ -185,6 +185,11 @@
                         <li><a href="#列表">列表</a></li>
                         <li><a href="#向量">向量</a></li>
                         <li><a href="#布尔逻辑">布尔逻辑</a></li>
+                        <li><a href="#映射">映射</a></li>
+                        <li><a href="#杂项曲变术">杂项曲变术</a></li>
+                        <li><a href="#法术">法术</a></li>
+                        <li><a href="#物品">物品</a></li>
+                        <li><a href="#算术">算术</a></li>
                     </ul>
                 </li>
             </ul>
@@ -464,6 +469,111 @@
                     <li><a href="tome_of_tomfoolery/distortions/boolean/none.html">缺失态之谋略</a></li>
                     <li><a href="tome_of_tomfoolery/distortions/boolean/lesser_than.html">较小之曲变</a></li>
                     <li><a href="tome_of_tomfoolery/distortions/boolean/greater_than.html">较大之曲变</a></li>
+                </ul>
+            </div>
+            
+            <div class="subcategory" id="映射">
+                <h3 class="subcategory-title">映射</h3>
+                <div class="note-box">
+                    <div class="note-title">笔记：映射</div>
+                    <p>本节的图案用于操纵映射。映射能建立法术片段到法术片段的联系，类似于字典能将字和其释义联系起来。</p>
+                    <p>如需生成空映射常量，请参见相关的修订术。</p>
+                </div>
+                
+                <ul class="tricks-list">
+                    <li><a href="tome_of_tomfoolery/distortions/map/map_insert.html">编表之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/map/map_get.html">领航员之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/map/map_merge.html">海军将领之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/map/map_remove.html">废止之谋略</a></li>
+                </ul>
+            </div>
+            
+            <div class="subcategory" id="杂项曲变术">
+                <h3 class="subcategory-title">杂项曲变术</h3>
+                <div class="note-box">
+                    <div class="note-title">笔记：杂项曲变术</div>
+                    <p>没法分进其他章节的若干杂项曲变术。</p>
+                </div>
+                
+                <ul class="tricks-list">
+                    <li><a href="tome_of_tomfoolery/distortions/misc/type_fragment.html">参量之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/misc/hash_values.html">衰朽之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/misc/escape_pattern.html">释义之曲变</a></li>
+                </ul>
+            </div>
+            
+            <div class="subcategory" id="法术">
+                <h3 class="subcategory-title">法术</h3>
+                <div class="note-box">
+                    <div class="note-title">笔记：法术</div>
+                    <p>抄绘图案能在法术施放前更改法术，而本节中的图案能在法术施放<em>中</em>修改。</p>
+                </div>
+                
+                <ul class="tricks-list">
+                    <li><a href="tome_of_tomfoolery/distortions/tree/supplier.html">供给之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/tree/closure.html">闭包之谋略</a></li>
+
+                <div class="note-box">
+                    <div class="note-title">笔记：地址</div>
+                    <p>正如列表中的元素可通过索引访问，法术的部件也可由其地址访问。地址是一个整数列表，用以表示法术中前往该圆的路径。</p>
+                    <p>得出圆地址的步骤如下：在根节点处开始；找到前往该圆所需经过的子圆；找出该子圆的索引，即顺时针方向上在该子圆前面的子圆的数目；重复前三步，直至抵达目的圆。所得的列表即是目的圆的地址。</p>
+                </div>
+
+                    <li><a href="tome_of_tomfoolery/distortions/tree/locate_glyph.html">定址之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/tree/locate_glyphs.html">发现之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/tree/retrieve_glyph.html">检索之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/tree/set_glyph.html">替换之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/tree/get_subparts.html">扎束之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/tree/retrieve_subtree.html">伐树之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/tree/set_subtree.html">嫁接之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/tree/add_subtree.html">分枝之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/tree/remove_subtree.html">剪枝之曲变</a></li>
+                </ul>
+            </div>
+            
+            <div class="subcategory" id="物品">
+                <h3 class="subcategory-title">物品</h3>
+                <div class="note-box">
+                    <div class="note-title">笔记：物品</div>
+                    <p>用于转换与物品有关法术片段的戏法。</p>
+                </div>
+                
+                <ul class="tricks-list">
+                    <li><a href="tome_of_tomfoolery/distortions/inventory/block_from_item.html">放置之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/inventory/item_from_block.html">拾取之曲变</a></li>
+                </ul>
+            </div>
+            
+            <div class="subcategory" id="算术">
+                <h3 class="subcategory-title">算术</h3>
+                <div class="note-box">
+                    <div class="note-title">笔记：算术</div>
+                    <p>本节的图案主要涉及基础算术及简单数学操作。</p>
+                    <p>许多基础算术操作对数和向量都有效，但并非所有戏法都是这样。</p>
+                </div>
+                
+                <ul class="tricks-list">
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/add.html">吞并之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/subtract.html">遗弃之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/multiply.html">统治之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/divide.html">屈从之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/modulo.html">整体之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/power.html">至尊之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/max.html">高贵之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/min.html">低位之谋略</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/ceil.html">壮丽之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/floor.html">谦卑之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/round.html">客观之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/sqrt.html">削损之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/invert.html">取反之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/abs.html">绝对主义者之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/sin.html">甲型几何之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/cos.html">乙型几何之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/tan.html">丙型几何之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/arcsin.html">甲型反几何之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/arccos.html">乙型反几何之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/arctan.html">丙型反几何之曲变</a></li>
+                    <li><a href="tome_of_tomfoolery/distortions/arithmetic/arctan2.html">笛卡尔角之曲变</a></li>
                 </ul>
             </div>
             
